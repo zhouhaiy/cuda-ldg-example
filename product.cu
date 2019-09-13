@@ -13,7 +13,7 @@
 
 typedef double mytype;
 
-void conv(const mytype *A, const mytype *B, mytype* out, int N) {
+void product(const mytype *A, const mytype *B, mytype* out, int N) {
 
     for (int i = 0; i < N; ++i)
         for (int j = 0; j < N; ++j)
@@ -26,7 +26,7 @@ unsigned long long dtime_usec(unsigned long long prev){
   return ((tv1.tv_sec * USECPSEC)+tv1.tv_usec) - prev;
 }
 
-__global__ void conv_Kernel2(const mytype * A, const mytype * B, mytype *out, const int N){
+__global__ void product_Kernel2(const mytype * A, const mytype * B, mytype *out, const int N){
     int idx = threadIdx.x+blockDim.x*blockIdx.x;
     if (idx < (2*N)-1){
       mytype my_sum = 0;
@@ -38,7 +38,7 @@ __global__ void conv_Kernel2(const mytype * A, const mytype * B, mytype *out, co
     }
 }
 
-__global__ void conv_Kernel1(const mytype * A, const mytype * B, mytype *out, const int N){
+__global__ void product_Kernel1(const mytype * A, const mytype * B, mytype *out, const int N){
     int idx = threadIdx.x+blockDim.x*blockIdx.x;
     if (idx < (2*N)-1){
       mytype my_sum = 0;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
     h_result[i] = 0;}
 
   unsigned long long cpu_time = dtime_usec(0);
-  conv(A, B, result, my_N);
+  product(A, B, result, my_N);
   cpu_time = dtime_usec(cpu_time);
 
   cudaMemset(d_result, 0, 2*my_N*sizeof(mytype));
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){
     unsigned long long gpu_time = dtime_usec(0);
     cudaMemcpy(d_A, h_A, my_N*sizeof(mytype), cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, my_N*sizeof(mytype), cudaMemcpyHostToDevice);
-    conv_Kernel1<<<((2*(my_N-1))+nTPB-1)/nTPB,nTPB>>>(d_A, d_B, d_result, my_N);
+    product_Kernel1<<<((2*(my_N-1))+nTPB-1)/nTPB,nTPB>>>(d_A, d_B, d_result, my_N);
     cudaDeviceSynchronize();
     cudaMemcpy(h_result, d_result, 2*my_N*sizeof(mytype), cudaMemcpyDeviceToHost);
     gpu_time = dtime_usec(gpu_time);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
     unsigned long long gpu_time = dtime_usec(0);
     cudaMemcpy(d_A, h_A, my_N*sizeof(mytype), cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, my_N*sizeof(mytype), cudaMemcpyHostToDevice);
-    conv_Kernel2<<<((2*(my_N-1))+nTPB-1)/nTPB,nTPB>>>(d_A, d_B, d_result, my_N);
+    product_Kernel2<<<((2*(my_N-1))+nTPB-1)/nTPB,nTPB>>>(d_A, d_B, d_result, my_N);
     cudaDeviceSynchronize();
     cudaMemcpy(h_result, d_result, 2*my_N*sizeof(mytype), cudaMemcpyDeviceToHost);
     gpu_time = dtime_usec(gpu_time);
