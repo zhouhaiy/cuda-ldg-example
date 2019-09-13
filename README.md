@@ -1,19 +1,15 @@
 # cuda-ldg-example
 How To Build:
-
 ./make.sh
 
 How To Run:
-
 ./gemm 1024
 
 Hardware Env:
-
 CPU: SkyLake 8180
 GPU: Tesla  
 
 Test Result: (1024 * 1024 matrix multiply)
-
 k1(without ldg) time: 13571us, k2(with ldg) time: 13458us
 
 
