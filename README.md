@@ -5,12 +5,19 @@ How To Build:
 
 How To Run:
 
-./product 8192
+./gemm 1024
 
-Test Result: (64K Bytes read only memory access, Computation = 64M ops)
+Hardware Env:
 
-Finished. k1(without ldg) time: 967us, k2(with ldg) time: 927us
+CPU: SkyLake 8180
 
-Summary
+GPU: Tesla  
 
-For 64K Bytes read only memory access and 64M op computation, __ldg instrinsics can bring average 3% ~ %4 performance gain in this simple dot product kernel. (Memory access O(N), Computation O(square of N)) 
+Test Result: (1024 * 1024 matrix multiply)
+
+Finished. k1(without ldg) time: 13571us, k2(with ldg) time: 13458us
+
+
+Findings:
+
+For shape (1024, 1024) matrix multiply, without __ldg intrinsics it will bring overall 0.7% ~ 0.8% performance penalty.
