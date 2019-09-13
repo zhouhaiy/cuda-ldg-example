@@ -7,10 +7,10 @@ How To Run:
 
 ./product 8192
 
-Test Result: (64K Bytes read only memory access, Computation = 16K ops)
+Test Result: (64K Bytes read only memory access, Computation = 64M ops)
 
 Finished. k1(without ldg) time: 967us, k2(with ldg) time: 927us
 
 Summary
 
-For 64K Bytes read only memory access, __ldg instrinsics can bring average 3% ~ %4 performance gain in this simple dot product kernel. (Computation 16K ops similar as vec product) 
+For 64K Bytes read only memory access and 64M op computation, __ldg instrinsics can bring average 3% ~ %4 performance gain in this simple dot product kernel. (Memory access O(N), Computation O(square of N)) 
