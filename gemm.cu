@@ -104,6 +104,6 @@ int main(int argc, char *argv[]){
     k2_time += gpu_time;
   }
 
-  printf("Finished. k1(without ldg) time: %ldus, k2(with ldg) time: %ldus\n", k1_time/100, k2_time/100);
+  printf("Finished. gemm1(without ldg) time: %ldus, gemm2(with ldg) time: %ldus\n", k1_time/100, k2_time/100);
   return 0;
 }
